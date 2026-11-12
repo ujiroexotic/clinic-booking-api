@@ -9,3 +9,4 @@ export const config = {
   rateLimitWindowMs: 60 * 1000, // 1 minute
   rateLimitMaxAttempts: 5       // at most 5 attempts per email per minute
 };
+

@@ -184,3 +184,4 @@ When recording your video for submission:
 4. **Automated Tests & Wrap Up (4:00 - 4:45)**
    - Run `npm test` in the terminal to display all 9 tests passing across all 5 levels.
    - Conclude by showing the public GitHub repo and deployed URLs.
+

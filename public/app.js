@@ -498,3 +498,4 @@ providerFilter.addEventListener('change', loadSlots);
 
 // Start
 init();
+
