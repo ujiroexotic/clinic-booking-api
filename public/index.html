@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex Clinic — Patient Appointment Booking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Top Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 6v12M6 12h12"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">Apex Health Clinic</h1>
+          <span class="brand-subtitle">Smart Appointment Scheduling</span>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button id="viewMyBookingsBtn" class="btn btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          My Bookings
+        </button>
+        <button id="configToggleBtn" class="btn btn-icon" title="API Key Settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Settings Bar (Collapsible) -->
+  <div id="settingsPanel" class="settings-panel hidden">
+    <div class="settings-content">
+      <div class="settings-field">
+        <label for="apiKeyInput">API Key (X-API-Key):</label>
+        <div class="input-with-action">
+          <input type="password" id="apiKeyInput" value="clinic-secret-key-2026">
+          <button id="toggleKeyVisibility" class="btn btn-sm">Show</button>
+          <button id="saveKeyBtn" class="btn btn-sm btn-primary">Save</button>
+        </div>
+      </div>
+      <div class="settings-field">
+        <button id="seedDataBtn" class="btn btn-sm btn-outline">Load Sample Clinic Slots</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="main-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-badge">Convenient Care • Verified Specialists</div>
+      <h2 class="hero-title">Book your doctor appointment in seconds</h2>
+      <p class="hero-desc">Choose your preferred specialist, select a suitable time slot, and receive instant confirmation.</p>
+    </section>
+
+    <!-- Filter & Toolbar -->
+    <section class="toolbar">
+      <div class="filter-group">
+        <label for="providerFilter">Doctor / Specialist:</label>
+        <select id="providerFilter">
+          <option value="">All Doctors</option>
+        </select>
+      </div>
+      <div class="toolbar-stats">
+        <span id="slotsCountBadge" class="badge">Loading slots...</span>
+        <button id="refreshSlotsBtn" class="btn btn-icon-sm" title="Refresh Slots">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Slots Grid -->
+    <section id="slotsContainer" class="slots-grid">
+      <!-- Dynamic slots inserted here -->
+    </section>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state hidden">
+      <div class="empty-icon">📅</div>
+      <h3>No slots found</h3>
+      <p>Click below to initialize sample appointment slots for the clinic.</p>
+      <button id="initSlotsBtn" class="btn btn-primary">Initialize Sample Slots</button>
+    </div>
+  </main>
+
+  <!-- Booking Modal -->
+  <div id="bookingModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalTitle">Book Appointment Slot</h3>
+        <button id="closeModalBtn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="slot-summary-box">
+          <div class="summary-item">
+            <span class="summary-label">Provider</span>
+            <span id="summaryProvider" class="summary-val">-</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Date & Time</span>
+            <span id="summaryTime" class="summary-val">-</span>
+          </div>
+        </div>
+
+        <form id="bookingForm">
+          <input type="hidden" id="selectedSlotId">
+          <div class="form-group">
+            <label for="patientName">Full Name *</label>
+            <input type="text" id="patientName" placeholder="e.g. Ada Obi" required>
+          </div>
+          <div class="form-group">
+            <label for="patientEmail">Email Address *</label>
+            <input type="email" id="patientEmail" placeholder="e.g. ada@example.com" required>
+            <small class="form-hint">Your booking confirmation will be linked to this email.</small>
+          </div>
+          <div id="bookingError" class="alert alert-error hidden"></div>
+          <div class="modal-footer">
+            <button type="button" id="cancelModalBtn" class="btn btn-secondary">Cancel</button>
+            <button type="submit" id="submitBookingBtn" class="btn btn-primary">
+              <span class="btn-text">Confirm Booking</span>
+              <span class="btn-spinner hidden"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmationModal" class="modal-overlay hidden">
+    <div class="modal-card confirmation-card">
+      <div class="success-icon-wrapper">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h3>Appointment Confirmed!</h3>
+      <p class="confirmation-subtitle">Your appointment has been successfully scheduled.</p>
+
+      <div class="confirmation-receipt">
+        <div class="receipt-row">
+          <span class="receipt-label">Booking Reference</span>
+          <span id="receiptId" class="receipt-value copyable">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Specialist</span>
+          <span id="receiptProvider" class="receipt-value">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Time & Date</span>
+          <span id="receiptTime" class="receipt-value">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Patient Name</span>
+          <span id="receiptName" class="receipt-value">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Email</span>
+          <span id="receiptEmail" class="receipt-value">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Status</span>
+          <span class="badge badge-success">Confirmed</span>
+        </div>
+      </div>
+
+      <div class="confirmation-actions">
+        <button id="closeConfirmationBtn" class="btn btn-primary">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- "My Bookings" Drawer / Modal -->
+  <div id="myBookingsModal" class="modal-overlay hidden">
+    <div class="modal-card modal-large">
+      <div class="modal-header">
+        <h3>Patient Bookings Lookup</h3>
+        <button id="closeMyBookingsBtn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="lookup-form">
+          <div class="form-group flex-1">
+            <label for="lookupEmail">Enter your Email</label>
+            <input type="email" id="lookupEmail" placeholder="patient@example.com">
+          </div>
+          <button id="searchBookingsBtn" class="btn btn-primary" style="margin-top: 24px;">Search</button>
+        </div>
+
+        <div id="userBookingsList" class="user-bookings-list">
+          <!-- Dynamic bookings list -->
+        </div>
+
+        <div id="paginationBar" class="pagination-bar hidden">
+          <button id="nextPageBtn" class="btn btn-sm btn-outline">Load Next Page</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>© 2026 Apex Health Clinic. Built for Koya Cohort 4 Assessment.</p>
+      <div class="footer-links">
+        <a href="/openapi.json" target="_blank">OpenAPI Spec</a>
+        <a href="/health" target="_blank">Health Check</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
