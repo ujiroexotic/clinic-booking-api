@@ -354,6 +354,22 @@ describe('Clinic Booking API Tests - All Levels', () => {
     assert.equal(resRetry.status, 201);
     assert.equal(resRetry.data.id, firstBookingId);
 
+    // Retry with SAME idempotency key but re-ordered JSON keys (canonical test)
+    const resRetryReordered = await apiRequest('/bookings', {
+      method: 'POST',
+      headers: {
+        'X-API-Key': API_KEY,
+        'Idempotency-Key': idemKey
+      },
+      body: {
+        email: 'ibrahim@example.com',
+        name: 'Ibrahim Musa',
+        slot_id: 's_idem_1'
+      }
+    });
+    assert.equal(resRetryReordered.status, 201);
+    assert.equal(resRetryReordered.data.id, firstBookingId);
+
     // Reuse SAME idempotency key with DIFFERENT body -> 422
     const resMismatch = await apiRequest('/bookings', {
       method: 'POST',
@@ -505,3 +521,4 @@ describe('Clinic Booking API Tests - All Levels', () => {
   });
 
 });
+

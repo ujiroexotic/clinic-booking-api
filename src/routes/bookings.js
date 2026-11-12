@@ -16,9 +16,19 @@ const router = express.Router();
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+function canonicalStringify(obj) {
+  if (obj === null || typeof obj !== 'object') {
+    return JSON.stringify(obj);
+  }
+  if (Array.isArray(obj)) {
+    return '[' + obj.map(canonicalStringify).join(',') + ']';
+  }
+  const keys = Object.keys(obj).sort();
+  return '{' + keys.map(k => JSON.stringify(k) + ':' + canonicalStringify(obj[k])).join(',') + '}';
+}
+
 function hashBody(body) {
-  // Sort keys for stable representation
-  return crypto.createHash('sha256').update(JSON.stringify(body || {})).digest('hex');
+  return crypto.createHash('sha256').update(canonicalStringify(body || {})).digest('hex');
 }
 
 // POST /bookings
@@ -181,3 +191,4 @@ router.delete('/:id', async (req, res, next) => {
 });
 
 export default router;
+
